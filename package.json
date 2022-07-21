@@ -1,0 +1,39 @@
+{
+  "name": "list",
+  "version": "0.0.1",
+  "description": "Liste utilitary",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/PeufOne/list.git"
+  },
+  "author": "jonas",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/PeufOne/list/issues"
+  },
+  "homepage": "https://github.com/PeufOne/list#readme",
+  "dependencies": {
+    "vite": "^3.0.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^1.0.1",
+    "@tsconfig/svelte": "^3.0.0",
+    "@types/node": "^18.0.6",
+    "@types/react": "^18.0.15",
+    "@types/react-dom": "^18.0.6",
+    "@vitejs/plugin-react": "^2.0.0",
+    "@vitejs/plugin-vue": "^3.0.1",
+    "svelte": "^3.49.0",
+    "svelte-check": "^2.8.0",
+    "svelte-preprocess": "^4.10.7",
+    "tslib": "^2.4.0",
+    "typescript": "^4.6.4",
+    "vite": "^3.0.0"
+  }
+}
