@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { onMount } from 'svelte'
   import hljs from 'highlight.js'
   import 'highlight.js/styles/vs.css'
   import hljs_svelte from 'highlightjs-svelte'
@@ -12,7 +11,7 @@
   hljs_svelte(hljs)
 </script>
 
-<h3>Liste éditable example</h3>
+<h3>Liste éditable examples (Svelte)</h3>
 
 <article>
   <h4>Basic</h4>

@@ -1,34 +1,44 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
+import hljs from 'highlight.js'
+import 'highlight.js/styles/vs.css'
+
 import './App.css'
+import Basic from './example/Basic'
+import basicRaw from './example/Basic?raw'
+import Advanced from './example/Advanced'
+import advancedRaw from './example/Advanced?raw'
 
-function App() {
-  const [count, setCount] = useState(0)
+const App = () => (
+  <>
+    <h3>Example avec React</h3>
 
-  return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <article>
+      <h4>Basic</h4>
+      <div className='row'>
+        <div className='code'>
+          <pre
+            dangerouslySetInnerHTML={{
+              __html: hljs.highlight('tsx', basicRaw).value,
+            }}
+          />
+        </div>
+        <Basic />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
+    </article>
+
+    <article>
+      <h4>Advanced</h4>
+      <div className='row'>
+        <div className='code'>
+          <pre
+            dangerouslySetInnerHTML={{
+              __html: hljs.highlight('tsx', advancedRaw).value,
+            }}
+          />
+        </div>
+        <Advanced />
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </div>
-  )
-}
+    </article>
+  </>
+)
 
 export default App
