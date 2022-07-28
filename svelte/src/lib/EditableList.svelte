@@ -1,6 +1,5 @@
 <script lang="ts">
   import { onMount } from 'svelte'
-
   import { initListEditable } from '$core/index'
 
   type TypeItem = $$Generic
@@ -12,17 +11,11 @@
   export let items: TypeItem[]
   export let getKey: (item: TypeItem) => string | number
 
-  function onChange(newOrderItems: TypeItem[]) {
-    console.log(newOrderItems)
-
-    items = newOrderItems
-  }
-
   onMount(() =>
     initListEditable<TypeItem>({
       listEl,
       items,
-      onChange,
+      onChange: (newOrderItems) => (items = newOrderItems),
     })
   )
 </script>

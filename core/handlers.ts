@@ -54,12 +54,14 @@ export function createMouseDownHandler<Type = unknown>(
         const len = limits.items.length
         const newOrderIndex = getNewOrderIndex(len, indexFrom, indexTo)
         if (onReindex) onReindex(newOrderIndex)
-        if (onChange && !items) {
-          console.error('WARNING', 'The option "onChange" require "items"')
-        }
-        if (onChange && items) {
-          const newOrder = newOrderIndex.map((index) => items[index])
-          onChange(newOrder)
+        if (onChange) {
+          if (!items)
+            console.error('WARNING', 'The option "onChange" require "items"')
+          else {
+            const newOrderItems = newOrderIndex.map((index) => items![index])
+            onChange(newOrderItems)
+            options.items = newOrderItems
+          }
         }
       }
     }
@@ -86,7 +88,6 @@ function createMouseMoveHandler(
     const newIndex = limits.items.findIndex((center) => deltaMouseY <= center)
 
     if (newIndex !== currentIndex) {
-      console.log({ newIndex })
       currentIndex = newIndex
       onHover(newIndex)
     }
