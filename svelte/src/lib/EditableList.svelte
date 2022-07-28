@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte'
 
-  import { initListEditable } from '$core/handlers'
+  import { initListEditable } from '$core/index'
 
   type TypeItem = $$Generic
   interface $$Slots {
@@ -10,8 +10,11 @@
 
   let listEl: HTMLDivElement
   export let items: TypeItem[]
+  export let getKey: (item: TypeItem) => string | number
 
   function onChange(newOrderItems: TypeItem[]) {
+    console.log(newOrderItems)
+
     items = newOrderItems
   }
 
@@ -25,8 +28,8 @@
 </script>
 
 <div bind:this={listEl}>
-  {#each items as item}
-    <div class="item">
+  {#each items as item (getKey(item))}
+    <div>
       <slot {item}>{JSON.stringify(item)}</slot>
     </div>
   {/each}

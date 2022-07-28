@@ -1,90 +1,40 @@
-import {
-  ILimits,
-  createPlaceholder,
-  getItemParent,
-  computeLimits,
-  initDragStyle,
-  resetDragStyle,
-  getNewOrderIndex,
-} from './utils'
+import type { ListEditableOptions, CreateMouseMoveOptions } from './type'
 import './index.css'
+import { CLASSNAME_DRAG_ACTIVE } from './index'
+import { initDragStyle, resetDragStyle } from './style'
+import {
+  createPlaceholder,
+  getListItem,
+  computeLimits,
+  getNewOrderIndex,
+  getListItemIndex,
+} from './utils'
 
-export type OnHoverHandler = (index: number) => void
-export type OnMoveHandler = (indexFrom: number, indexTo: number) => void
-export type OnReindexHandler = (newOrder: number[]) => void
-export type OnChangeHandler<Type> = (newOrder: Type[]) => void
-
-interface ListEditableOptions<Type = unknown> {
-  listEl: HTMLElement | null
-  onHover?: OnHoverHandler
-  onMove?: OnMoveHandler
-  /** Déclencher quand l'ordre change. newOrder est un tableau d'index */
-  onReindex?: OnReindexHandler
-  /** Déclencher quand l'ordre change. newOrder est les items fournit réordonné */
-  onChange?: OnChangeHandler<Type>
-  /** Fournir les items pour directement récupérer la liste à jour dans onChange */
-  items?: Type[]
-  onDelete?: (index: number, items?: Type[]) => void
-}
-
-export function initListEditable<Type = unknown>(
-  options: ListEditableOptions<Type>
-) {
-  const { listEl, onDelete, items } = options
-  if (!listEl) return
-
-  const mouseDownHandler = createMouseDownHandler<Type>(options)
-
-  const deleteButtons = listEl.querySelectorAll('.item-delete')
-  const deleteButtonHandlers: ((event: Event) => void)[] = []
-  deleteButtons.forEach((button, index) => {
-    const handler = (event: Event) => {
-      event.stopPropagation()
-      if (onDelete) onDelete(index, items)
-    }
-    button.addEventListener('mousedown', handler)
-    deleteButtonHandlers.push(handler)
-  })
-
-  listEl.classList.add('list')
-  listEl.addEventListener('mousedown', mouseDownHandler)
-
-  function destroy() {
-    listEl?.classList.remove('list')
-    listEl?.removeEventListener('mousedown', mouseDownHandler)
-    deleteButtonHandlers.forEach((handler, index) => {
-      deleteButtons[index].removeEventListener('mousedown', handler)
-    })
-  }
-  return destroy
-}
-
-function createMouseDownHandler<Type = unknown>(
+export function createMouseDownHandler<Type = unknown>(
   options: ListEditableOptions<Type>
 ) {
   const { listEl } = options
 
   return (event: MouseEvent) => {
-    const dragEl = getItemParent(event.target as HTMLElement)
+    const dragEl = getListItem(event.target as HTMLElement)
     if (!dragEl) return
     if (!listEl) return
-    listEl.classList.add('drag-active')
-    dragEl.classList.add('drag-active')
+    listEl.classList.add(CLASSNAME_DRAG_ACTIVE)
+    dragEl.classList.add(CLASSNAME_DRAG_ACTIVE)
 
     const limits = computeLimits(listEl, dragEl)
     if (!limits) return
 
     initDragStyle(dragEl)
-    const placeholder = createPlaceholder({ listEl, dragEl, limits })
+    const indexFrom = getListItemIndex(listEl, dragEl)
+    const placeholder = createPlaceholder({ listEl, dragEl, indexFrom })
 
-    const index = +(dragEl.dataset.index || 0)
-    let indexTo = index
+    let indexTo = indexFrom
     const handleMouseMove = createMouseMoveHandler(
-      { dragEl, limits, originMouseY: event.clientY },
-      (_index) => {
+      { dragEl, limits, originMouseY: event.clientY, indexFrom },
+      (newIndex) => {
         const { onHover } = options
-
-        indexTo = _index
+        indexTo = newIndex
         placeholder.moveTo(indexTo)
         if (onHover) onHover(indexTo)
       }
@@ -96,16 +46,16 @@ function createMouseDownHandler<Type = unknown>(
       document.removeEventListener('mousemove', handleMouseMove)
       resetDragStyle(dragEl)
       placeholder.remove()
-      listEl.classList.remove('drag-active')
-      dragEl.classList.remove('drag-active')
-      if (index === indexTo) return
-      if (onMove) onMove(index, indexTo)
+      listEl.classList.remove(CLASSNAME_DRAG_ACTIVE)
+      dragEl.classList.remove(CLASSNAME_DRAG_ACTIVE)
+      if (indexFrom === indexTo) return
+      if (onMove) onMove(indexFrom, indexTo)
       if (onChange || onReindex) {
         const len = limits.items.length
-        const newOrderIndex = getNewOrderIndex(len, index, indexTo)
+        const newOrderIndex = getNewOrderIndex(len, indexFrom, indexTo)
         if (onReindex) onReindex(newOrderIndex)
         if (onChange && !items) {
-          console.error('WARNING', '"onChange" prop require "items" prop')
+          console.error('WARNING', 'The option "onChange" require "items"')
         }
         if (onChange && items) {
           const newOrder = newOrderIndex.map((index) => items[index])
@@ -119,16 +69,11 @@ function createMouseDownHandler<Type = unknown>(
   }
 }
 
-interface CreateMouseMoveOptions {
-  dragEl: HTMLElement
-  originMouseY: number
-  limits: ILimits
-}
 function createMouseMoveHandler(
-  { dragEl, limits, originMouseY }: CreateMouseMoveOptions,
+  { dragEl, limits, originMouseY, indexFrom }: CreateMouseMoveOptions,
   onHover: (newIndex: number) => void
 ) {
-  let currentIndex = +(dragEl.dataset.index || 0)
+  let currentIndex = indexFrom
 
   return (event: MouseEvent) => {
     if (!dragEl || !limits || !originMouseY) return
@@ -141,6 +86,7 @@ function createMouseMoveHandler(
     const newIndex = limits.items.findIndex((center) => deltaMouseY <= center)
 
     if (newIndex !== currentIndex) {
+      console.log({ newIndex })
       currentIndex = newIndex
       onHover(newIndex)
     }

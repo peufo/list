@@ -1,47 +1,42 @@
-.list {
-    --border-radius: 5px;
-    --background-hover: rgb(246, 246, 246);
-    --background-active: rgb(235, 235, 235);
-
-    border: 1px solid #ccc;
-    padding: 8px;
-    position: relative;
-    border-radius: var(--border-radius);
+.editable-list {
+  position: relative;
+  --border-radius: 5px;
+  --background-hover: rgb(246, 246, 246);
+  --background-active: rgb(235, 235, 235);
+  border-radius: var(--border-radius);
+  border: 1px solid #ccc;
+  padding: 8px;
 }
 
-.item {
-    display: flex;
-    padding: 4px 8px;
-    align-items: center;
-    cursor: pointer;
-    border-radius: var(--border-radius);
-    -ms-user-select: none;
-    user-select: none; 
+.editable-list .item-delete {
+  transition: opacity 200ms ease;
+  opacity: 1;
 }
 
-.placeholder {
-    background: var(--background-hover);
-    border-radius: var(--border-radius);
+.editable-list.drag-active .item-delete {
+  opacity: 0;
 }
 
-.list .item-delete {
-    transition: opacity 200ms ease;
-    opacity: 1;
+.editable-list > div {
+  cursor: pointer;
+  border-radius: var(--border-radius);
+  -ms-user-select: none;
+  user-select: none;
 }
 
-.list.drag-active .item-delete {
-    opacity: 0;
+.editable-list > div:hover {
+  background: var(--background-hover);
 }
 
-.item:hover {
-    background: var(--background-hover);
+.editable-list > div.drag-active {
+  background: var(--background-active);
 }
-
-.item.drag-active {
-    background: var(--background-active);
-}
-
 
 .item-content {
-    flex-grow: 1;
+  flex-grow: 1;
+}
+
+.item-placholder {
+  background: var(--background-hover);
+  border-radius: var(--border-radius);
 }

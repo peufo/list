@@ -1,53 +1,33 @@
-export function initDragStyle(dragEl: HTMLElement) {
-  dragEl.style.zIndex = `${+dragEl.style.zIndex + 1}`
-  dragEl.style.top = `${dragEl.offsetTop}px`
-  dragEl.style.width = `${dragEl.offsetWidth}px`
-  dragEl.style.height = `${dragEl.offsetHeight}px`
-  dragEl.style.position = 'absolute'
-}
+import type { ILimits, CreatePlaceholderArgs } from './type'
+import { CLASSNAME_LIST, CLASSNAME_PLACEHOLDER } from './index'
 
-export function resetDragStyle(dragEl: HTMLElement) {
-  dragEl.style.zIndex = `${+dragEl.style.zIndex - 1}`
-  dragEl.style.transform = ''
-  dragEl.style.position = 'initial'
-  dragEl.style.width = `auto`
-  dragEl.style.height = `auto`
-}
-
-/** Permet de remonter sur la div .item depuis click.target */
-export function getItemParent(element: HTMLElement | null): HTMLElement | null {
+/** Permet de remonter sur "editable > div" depuis click.target */
+export function getListItem(element: HTMLElement | null): HTMLElement | null {
   if (element === null) return null
-  if (element.classList.contains('item')) return element
-  return getItemParent(element.parentElement)
+  if (element.parentElement?.classList.contains(CLASSNAME_LIST)) return element
+  return getListItem(element.parentElement)
 }
 
-interface UpdatePlaceholderArgs {
-  listEl: HTMLElement
-  dragEl: HTMLElement
-  limits: ILimits
+export function getListItemIndex(listEl: HTMLElement, itemEl: HTMLElement) {
+  return [...listEl.children].findIndex((item) => item === itemEl)
 }
 
 export function createPlaceholder({
   listEl,
   dragEl,
-  limits,
-}: UpdatePlaceholderArgs) {
-  const initialIndex = +(dragEl.dataset.index || 0)
-
+  indexFrom,
+}: CreatePlaceholderArgs) {
+  const itemsEl = [...listEl.children]
   const placeholderEl = document.createElement('div')
-  placeholderEl.classList.add('placeholder')
+  placeholderEl.classList.add(CLASSNAME_PLACEHOLDER)
   placeholderEl.style.height = `${dragEl.offsetHeight}px`
+  listEl.insertBefore(placeholderEl, dragEl)
+
   const moveTo = (index: number) => {
-    if (index === limits.items.length - 1) {
-      listEl.appendChild(placeholderEl)
-      return
-    }
-    const selectorIndex = index < initialIndex ? index : index + 1
-    const query = `[data-index="${selectorIndex}"]`
-    const itemNode = listEl.querySelector(query)
-    listEl.insertBefore(placeholderEl, itemNode)
+    const selectorIndex = index < indexFrom ? index : index + 1
+    const itemEl = itemsEl[selectorIndex]
+    listEl.insertBefore(placeholderEl, itemEl)
   }
-  moveTo(initialIndex)
   return {
     moveTo,
     remove() {
@@ -58,23 +38,15 @@ export function createPlaceholder({
   }
 }
 
-export interface ILimits {
-  top: number
-  bottom: number
-  items: number[]
-}
-
 /** Calcule les limites de déplacement supérieur, inférieur et les frontières entre deux items */
 export function computeLimits(
   listEl: HTMLElement,
   dragEl: HTMLElement
 ): ILimits | null {
   const rect = dragEl.getBoundingClientRect()
-
-  const itemsElements = listEl.querySelectorAll<HTMLDivElement>('.item')
-  const itemsRect = Array.from(itemsElements).map((item) =>
-    item.getBoundingClientRect()
-  )
+  const itemsRect = [...listEl.children]
+    .filter((el) => !el.classList.contains(CLASSNAME_PLACEHOLDER))
+    .map((el) => el.getBoundingClientRect())
 
   const tops = itemsRect.map((item) => item.top - rect.top)
   const bottoms = itemsRect.map((item) => item.bottom - rect.bottom)

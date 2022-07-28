@@ -2,26 +2,32 @@
   import EditableList from '$lib/EditableList.svelte'
   import { faker } from '@faker-js/faker'
 
-  const items = Array(10)
+  const items = Array(6)
     .fill(null)
     .map(() => ({
       name: faker.name.firstName(),
       city: faker.address.cityName(),
       color: faker.color.rgb({ format: 'css' }),
+      key: Math.random(),
     }))
 </script>
 
-<main>
-  <EditableList {items} let:item>
-    <div class="item">
-      <div class="item-color" style="background: {item.color};" />
-      <div>
-        <div><b>{item.name}</b></div>
-        <div>{item.city}</div>
-      </div>
+<EditableList {items} let:item getKey={(item) => item.key}>
+  <div class="item">
+    <div class="item-color" style="background: {item.color};" />
+    <div>
+      <div><b>{item.name}</b></div>
+      <div>{item.city}</div>
     </div>
-  </EditableList>
-</main>
+  </div>
+</EditableList>
+
+<hr />
+
+<EditableList {items} let:item getKey={(item) => item.key}>
+  <div><b>{item.name}</b></div>
+  <div>{item.city}</div>
+</EditableList>
 
 <style>
   .item {
