@@ -6,8 +6,8 @@
 
   import Basic from './example/Basic.svelte'
   import basicRaw from './example/Basic.svelte?raw'
-  import Colored from './example/Colored.svelte'
-  import coloredRaw from './example/Colored.svelte?raw'
+  import Advanced from './example/Advanced.svelte'
+  import AdvancedRaw from './example/Advanced.svelte?raw'
 
   hljs_svelte(hljs)
 </script>
@@ -15,7 +15,7 @@
 <h3>Liste éditable example</h3>
 
 <article>
-  <h4>Simple</h4>
+  <h4>Basic</h4>
   <div class="row">
     <div class="code">
       <pre>{@html hljs.highlight('svelte', basicRaw).value}</pre>
@@ -25,12 +25,12 @@
 </article>
 
 <article>
-  <h4>Colored</h4>
+  <h4>Advanced</h4>
   <div class="row">
     <div class="code">
-      <pre>{@html hljs.highlight('svelte', coloredRaw).value}</pre>
+      <pre>{@html hljs.highlight('svelte', AdvancedRaw).value}</pre>
     </div>
-    <Colored />
+    <Advanced />
   </div>
 </article>
 

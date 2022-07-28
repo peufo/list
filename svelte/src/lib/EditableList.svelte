@@ -4,7 +4,7 @@
 
   type TypeItem = $$Generic
   interface $$Slots {
-    default: { item: TypeItem }
+    default: { item: TypeItem; index: number }
   }
   interface Events {
     change: TypeItem[]
@@ -37,9 +37,9 @@
 </script>
 
 <div bind:this={listEl}>
-  {#each items as item (getKey(item))}
+  {#each items as item, index (getKey(item))}
     <div>
-      <slot {item}>{JSON.stringify(item)}</slot>
+      <slot {item} {index}>{JSON.stringify(item)}</slot>
     </div>
   {/each}
 </div>
