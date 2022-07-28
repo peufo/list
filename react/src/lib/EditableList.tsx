@@ -2,13 +2,13 @@ import { ReactElement, useEffect, useRef } from 'react'
 import { initListEditable } from '$core/index'
 import type { ListEditableOptions } from '$core/type'
 
-interface IProps<TypeItem = object>
+interface IProps<TypeItem = unknown>
   extends Omit<ListEditableOptions<TypeItem>, 'listEl'> {
   getKey: (item: TypeItem) => string | number
   renderItem: (item: TypeItem) => ReactElement
 }
 
-export default function EditableList<TypeItem = object>(
+export default function EditableList<TypeItem = unknown>(
   options: IProps<TypeItem>
 ) {
   const listRef = useRef<HTMLDivElement>(null)

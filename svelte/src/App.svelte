@@ -35,7 +35,7 @@
 
 <style>
   :global(body) {
-    font-family: helvetica;
+    font-family: Inter, Avenir, Helvetica, Arial, sans-serif;
   }
   .code > pre {
     font-family: Liberation Mono, monospace;
