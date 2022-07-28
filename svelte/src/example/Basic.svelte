@@ -8,4 +8,6 @@
   }))
 </script>
 
-<EditableList {items} let:item getKey={(item) => item.key} />
+<EditableList {items} let:item getKey={(item) => item.key}>
+  {item.name}
+</EditableList>
