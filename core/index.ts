@@ -1,6 +1,7 @@
 import type { ListEditableOptions } from './type'
 import { createMouseDownHandler } from './handlers'
 
+export * from './type'
 export const CLASSNAME_LIST = 'editable-list'
 export const CLASSNAME_DRAG_ACTIVE = 'drag-active'
 export const CLASSNAME_PLACEHOLDER = 'item-placholder'

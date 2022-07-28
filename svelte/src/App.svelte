@@ -2,14 +2,12 @@
   import EditableList from '$lib/EditableList.svelte'
   import { faker } from '@faker-js/faker'
 
-  const items = Array(6)
-    .fill(null)
-    .map(() => ({
-      name: faker.name.firstName(),
-      city: faker.address.cityName(),
-      color: faker.color.rgb({ format: 'css' }),
-      key: Math.random(),
-    }))
+  const items = [...Array(6)].map((u, i) => ({
+    name: faker.name.firstName(),
+    city: faker.address.cityName(),
+    color: faker.color.rgb({ format: 'css' }),
+    key: i,
+  }))
 </script>
 
 <EditableList {items} let:item getKey={(item) => item.key}>
