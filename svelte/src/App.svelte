@@ -1,43 +1,59 @@
 <script lang="ts">
-  import EditableList from '$lib/EditableList.svelte'
-  import { faker } from '@faker-js/faker'
+  import { onMount } from 'svelte'
+  import hljs from 'highlight.js'
+  import 'highlight.js/styles/vs.css'
+  import hljs_svelte from 'highlightjs-svelte'
 
-  const items = [...Array(6)].map((u, i) => ({
-    name: faker.name.firstName(),
-    city: faker.address.cityName(),
-    color: faker.color.rgb({ format: 'css' }),
-    key: i,
-  }))
+  import Basic from './example/Basic.svelte'
+  import basicRaw from './example/Basic.svelte?raw'
+  import Colored from './example/Colored.svelte'
+  import coloredRaw from './example/Colored.svelte?raw'
+
+  hljs_svelte(hljs)
 </script>
 
-<EditableList {items} let:item getKey={(item) => item.key}>
-  <div class="item">
-    <div class="item-color" style="background: {item.color};" />
-    <div>
-      <div><b>{item.name}</b></div>
-      <div>{item.city}</div>
+<h3>Liste éditable example</h3>
+
+<article>
+  <h4>Simple</h4>
+  <div class="row">
+    <div class="code">
+      <pre>{@html hljs.highlight('svelte', basicRaw).value}</pre>
     </div>
+    <Basic />
   </div>
-</EditableList>
+</article>
 
-<hr />
-
-<EditableList {items} let:item getKey={(item) => item.key}>
-  <div><b>{item.name}</b></div>
-  <div>{item.city}</div>
-</EditableList>
+<article>
+  <h4>Colored</h4>
+  <div class="row">
+    <div class="code">
+      <pre>{@html hljs.highlight('svelte', coloredRaw).value}</pre>
+    </div>
+    <Colored />
+  </div>
+</article>
 
 <style>
-  .item {
-    padding: 2px;
-    display: flex;
-    gap: 4px;
-    align-items: center;
+  :global(body) {
+    font-family: helvetica;
+  }
+  .code > pre {
+    font-family: Liberation Mono, monospace;
+  }
+  .code {
+    background: #f8f8f8;
+    padding: 1em;
+    border-radius: 0.5em;
   }
 
-  .item-color {
-    height: 45px;
-    width: 10px;
-    border-radius: 5px;
+  article {
+    margin-top: 2em;
+  }
+  .row {
+    display: grid;
+    gap: 1em;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
   }
 </style>
